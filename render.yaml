@@ -1,0 +1,86 @@
+# =============================================================================
+# Render Blueprint — AMR Prediction System
+# =============================================================================
+# This file deploys BOTH services (backend + frontend) from a single repo.
+#
+# Usage:
+#   1. Push this repo to GitHub
+#   2. Go to render.com → New → Blueprint
+#   3. Connect your repo — Render auto-detects this file
+#   4. Set the secret env vars in the Render dashboard (marked sync: false)
+#
+# Docs: https://render.com/docs/blueprint-spec
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Service 1: FastAPI Backend (ML inference + LangChain RAG)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: amr-backend
+    runtime: python
+    rootDir: backend           # Render runs pip install from this sub-directory
+
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+
+    # Render injects $PORT automatically — uvicorn must bind to it
+    startCommand: >
+      uvicorn fastapi_backend.main:app
+      --host 0.0.0.0
+      --port $PORT
+      --workers 1
+
+    # Health check — Render uses this to know the service is ready
+    healthCheckPath: /api/health
+
+    envVars:
+      # ---- Secrets (set manually in the Render Dashboard) ----
+      - key: GEMINI_API_KEY
+        sync: false            # NEVER auto-synced — you must paste this in the dashboard
+
+      # ---- Gemini config ----
+      - key: GEMINI_MODEL_NAME
+        value: gemini-2.5-flash
+      - key: GEMINI_EMBEDDING_MODEL
+        value: models/embedding-001
+
+      # ---- CORS: allow requests from the frontend service ----
+      # Render expands service references automatically
+      - key: ALLOW_ORIGINS
+        value: "*"             # Replace with your frontend URL after first deploy
+
+      # ---- File paths (relative to repo root, backend/ adds ../) ----
+      - key: MODELS_DIR
+        value: ../ml_pipeline/models
+      - key: PROCESSED_DATA_DIR
+        value: ../data/processed
+
+      # ---- Logging ----
+      - key: LOG_LEVEL
+        value: INFO
+
+  # ---------------------------------------------------------------------------
+  # Service 2: Streamlit Frontend (Clinical dashboard)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: amr-frontend
+    runtime: python
+    rootDir: frontend
+
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+
+    # --server.port uses $PORT injected by Render
+    startCommand: >
+      streamlit run streamlit_app/app.py
+      --server.port $PORT
+      --server.headless true
+      --server.enableCORS false
+      --server.enableXsrfProtection false
+
+    envVars:
+      # ---- Backend URL: set AFTER the backend service is deployed ----
+      # Replace the placeholder with your actual backend URL from Render, e.g.:
+      # https://amr-backend.onrender.com
+      - key: BACKEND_URL
+        value: https://amr-backend.onrender.com  # UPDATE THIS after first backend deploy

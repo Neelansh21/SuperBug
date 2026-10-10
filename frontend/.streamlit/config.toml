@@ -1,0 +1,12 @@
+[server]
+# Render injects $PORT — Streamlit must listen on it
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+# Prevents the "you can now view this app in the browser" message
+gatherUsageStats = false
+
+[theme]
+base = "dark"

@@ -1,0 +1,22 @@
+# =============================================================================
+# AMR Prediction System — Frontend Requirements
+# (Streamlit clinical dashboard)
+# Install: pip install -r requirements.txt
+# =============================================================================
+
+# --- Frontend UI ---
+streamlit>=1.30.0
+
+# --- Visualisation (used by streamlit_app/components/dashboard.py) ---
+plotly>=5.18.0
+
+# --- Data processing (for spectrum parsing / display) ---
+numpy>=1.24.0
+pandas>=2.0.0
+
+# --- HTTP Client (Streamlit → FastAPI) ---
+requests>=2.31.0
+httpx>=0.27.0
+
+# --- Environment & Config ---
+python-dotenv>=1.0.0

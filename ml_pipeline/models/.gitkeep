@@ -1,0 +1,5 @@
+# Placeholder: Serialized ML models directory
+# This directory will contain trained .pkl model files:
+#   - s_aureus_oxacillin.pkl
+#   - k_pneumoniae_meropenem.pkl
+#   - e_coli_ceftriaxone.pkl

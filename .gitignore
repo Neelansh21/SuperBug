@@ -1,0 +1,60 @@
+# =============================================================================
+# AMR Prediction System - Git Ignore Rules
+# =============================================================================
+
+# --- Environment ---
+.env
+backend/.env
+frontend/.env
+.venv/
+venv/
+env/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# --- Data (large files) ---
+DRIAMS-A/
+data/raw/
+data/processed/*.csv
+data/processed/*.pkl
+data/processed/*.npy
+*.pkl
+*.h5
+*.hdf5
+*.npy
+
+# NOTE: .joblib model files are NOT ignored so they can be committed
+# to the repo and loaded by the Render deployment at startup.
+# If models grow beyond GitHub's 100MB file limit, migrate to Git LFS:
+#   git lfs track "*.joblib"
+# *.joblib  <-- intentionally NOT here
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+logs/
+catboost_info/
+
+# --- Personal / non-essential (not part of the codebase) ---
+Study Guide/
+scratch/
